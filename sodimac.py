@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 
 from resources import URLS
 
+
 def scrap():
     rs = (grequests.get(u) for u in URLS.get('sillas'))
     items = []
@@ -47,18 +48,18 @@ def scrap():
 def get_price(element):
     try:
         dirty_price = element.get_text() \
-                             .strip() \
-                             .replace("$", "") \
-                             .replace("C/U", "") \
-                             .replace("Caja", "") \
-                             .replace("Display", "") \
-                             .replace("ML", "") \
-                             .replace("Juego", "") \
-                             .replace("DSPL", "") \
-                             .replace("M2", "") \
-                             .replace("Pack", "") \
-                             .replace(".", "") \
-                             .strip()
+            .strip() \
+            .replace("$", "") \
+            .replace("C/U", "") \
+            .replace("Caja", "") \
+            .replace("Display", "") \
+            .replace("ML", "") \
+            .replace("Juego", "") \
+            .replace("DSPL", "") \
+            .replace("M2", "") \
+            .replace("Pack", "") \
+            .replace(".", "") \
+            .strip()
         return int(dirty_price)
     except Exception as exception:
         print('No hay precio', exception, element.get_text())
@@ -68,15 +69,15 @@ def get_normal_price(elements, default_price):
     try:
         for element in elements:
             dirty_price = element.get_text() \
-                                 .strip() \
-                                 .replace("\n", "") \
-                                 .replace("$", "") \
-                                 .replace(".", "") \
-                                 .replace("Caja", "") \
-                                 .replace("&nbsp;", "") \
-                                 .replace("Juego", "") \
-                                 .replace("M2", "") \
-                                 .replace("C/U", "")
+                .strip() \
+                .replace("\n", "") \
+                .replace("$", "") \
+                .replace(".", "") \
+                .replace("Caja", "") \
+                .replace("&nbsp;", "") \
+                .replace("Juego", "") \
+                .replace("M2", "") \
+                .replace("C/U", "")
             dirty_price = unicodedata.normalize('NFKD', dirty_price).replace(" ", "")
 
             if dirty_price.startswith('Ahorro'):
@@ -110,7 +111,7 @@ def to_csv(items):
     filename = 'savings_{date:%d-%m-%Y_%H-%M-%S}.csv'.format(date=datetime.datetime.now())
 
     output = open(filename, 'w', newline='')
-    out = csv.writer(output)
+    out = csv.writer(output, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
     out.writerow(['Nombre', 'sku', 'Precio normal', 'Precio Actual', 'Ahorro', '%', 'url'])
     out.writerows(data)
@@ -138,7 +139,7 @@ def print_items(items):
 
 
 def difference(value1, value2):
-    return abs(int((((value1-value2)/value2) * 100)))
+    return abs(int((((value1 - value2) / value2) * 100)))
 
 
 if __name__ == "__main__":
